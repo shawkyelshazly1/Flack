@@ -53,6 +53,21 @@ class UserRepository {
 			return { error: "Something went wrong!" };
 		}
 	}
+
+	// search users by username
+	async FindSimilarUsername(username) {
+		try {
+			const regex = new RegExp(username, "i");
+			const users = await UserModel.find(
+				{ username: { $regex: regex } },
+				{ password: 0 }
+			);
+			return users;
+		} catch (error) {
+			consola.error(error);
+			return { error: "Something went wrong!" };
+		}
+	}
 }
 
 module.exports = UserRepository;

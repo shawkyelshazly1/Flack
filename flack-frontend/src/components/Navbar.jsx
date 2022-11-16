@@ -27,7 +27,7 @@ export default function Navbar() {
 							navigate(`/profile/asdasd54asd`);
 						}}
 					/>
-					<span class="tooltiptext">Profile Name</span>
+					<span className="tooltiptext">Profile Name</span>
 				</div>
 
 				<FiLogOut

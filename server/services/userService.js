@@ -91,6 +91,18 @@ class UserService {
 			return { error: "Something went wrong!" };
 		}
 	}
+
+	// search users
+	async searchUsers(searchQuery) {
+		try {
+			
+			const users = await this.repository.FindSimilarUsername(searchQuery);
+			return { data: users };
+		} catch (error) {
+			consola.error(error);
+			return { error: "Something went wrong!" };
+		}
+	}
 }
 
 module.exports = UserService;

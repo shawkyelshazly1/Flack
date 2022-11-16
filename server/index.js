@@ -3,7 +3,8 @@ const express = require("express"),
 	morgan = require("morgan"),
 	consola = require("consola"),
 	{ initDatabaseConnection } = require("./database"),
-	{ UserAPI } = require("./api");
+	{ UserAPI, chatAPI, messageAPI } = require("./api"),
+	{ configureSocketIOEvents } = require("./utils/socketIO");
 
 // set dotenv
 require("dotenv").config();
@@ -19,10 +20,15 @@ app.use(express.json());
 // start db connection
 initDatabaseConnection();
 
-// setting APIs
+// initializing APIs
 UserAPI(app);
+chatAPI(app);
+messageAPI(app);
 
 // start server
-app.listen(process.env.PORT || 5000, () => {
+const server = app.listen(process.env.PORT || 5000, () => {
 	consola.success("🚀 Server started on Port: " + process.env.PORT);
 });
+
+// SocketIO server setup
+configureSocketIOEvents(server);

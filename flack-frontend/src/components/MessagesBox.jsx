@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { CurrentAppContext } from "../CurrentAppContext";
 import ChatMessage from "./ChatMessage";
 
 export default function MessagesBox() {

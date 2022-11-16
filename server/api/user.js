@@ -75,4 +75,18 @@ module.exports = (app) => {
 
 		return res.status(200).json(data.data);
 	});
+
+	// search users
+	app.get("/user/search/:username", checkAuth, async (req, res, next) => {
+		const { username } = req.params;
+
+		const data = await userService.searchUsers(username);
+
+		// validate and return if error
+		if (data.error) {
+			return res.status(409).json({ error: data.error });
+		}
+
+		return res.status(200).json(data.data);
+	});
 };
