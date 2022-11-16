@@ -3,6 +3,7 @@ import { CgProfile } from "react-icons/cg";
 import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router";
 import { CurrentUserContext } from "../CurrentUserContext";
+import UsersSearchBar from "./UsersSearchBar";
 
 export default function Navbar() {
 	const { handleLogout } = useContext(CurrentUserContext);
@@ -10,13 +11,7 @@ export default function Navbar() {
 
 	return (
 		<div className="flex flex-row w-full items-center justify-center py-2 px-4 bg-[#350D36]">
-			<div className="flex flex-1 flex-row items-center justify-center">
-				<input
-					type="text"
-					className="w-[40%] focus:outline-none focus:bg-white rounded-lg px-3 py-2 bg-[#644565]"
-					placeholder="🔎 Search for Users"
-				/>
-			</div>
+			<UsersSearchBar />
 			<div className="flex flex-row gap-2 items-center">
 				<div className="tooltip">
 					<CgProfile

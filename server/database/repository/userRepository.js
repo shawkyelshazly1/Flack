@@ -61,7 +61,7 @@ class UserRepository {
 			const users = await UserModel.find(
 				{ username: { $regex: regex } },
 				{ password: 0 }
-			);
+			).limit(6);
 			return users;
 		} catch (error) {
 			consola.error(error);

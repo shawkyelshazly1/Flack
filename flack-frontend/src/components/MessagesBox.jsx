@@ -1,27 +1,46 @@
 import React, { useContext } from "react";
 import { CurrentAppContext } from "../CurrentAppContext";
 import ChatMessage from "./ChatMessage";
+import S from "string";
+import { CurrentUserContext } from "../CurrentUserContext";
+import { useQuery } from "@tanstack/react-query";
+import api from "../api";
 
 export default function MessagesBox() {
+	const { selectedChat } = useContext(CurrentAppContext);
+	const { currentUser } = useContext(CurrentUserContext);
+
+	const { data: chatMessages, isLoading } = useQuery(
+		["chat-messages", selectedChat],
+		() => {
+			return api.get(`chat/${selectedChat._id}/messages`).then((res) => {
+				return res.data;
+			});
+		}
+	);
+
+	let receiver = selectedChat.users.filter(
+		(user) => user._id !== currentUser._id
+	)[0];
+
+	const chatName = S(receiver.firstName + " " + receiver.lastName).titleCase()
+		.s;
+
 	return (
 		<div className="flex flex-col flex-1 gap-4 h-[82%] fixed ">
 			<div className="flex flex-row items-center gap-2">
-				<img
-					className="w-8"
-					src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLe5PABjXc17cjIMOibECLM7ppDwMmiDg6Dw&usqp=CAU"
-					alt=""
-				/>
-				<h1 className="font-semibold">Ahmed Mohamed</h1>
+				<img className="w-8" src={receiver.profileImage} alt="" />
+				<h1 className="font-semibold">{chatName}</h1>
 			</div>
 			<hr />
 			<div className="flex flex-col gap-6 h-full overflow-y-scroll">
-				<ChatMessage />
-				<ChatMessage />
-				<ChatMessage />
-				<ChatMessage />
-				<ChatMessage />
-				<ChatMessage />
-				<ChatMessage />
+				{isLoading ? (
+					<h1>Loading...</h1>
+				) : (
+					chatMessages.map((message) => (
+						<ChatMessage message={message} key={message._id} />
+					))
+				)}
 			</div>
 		</div>
 	);

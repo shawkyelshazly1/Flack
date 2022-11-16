@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import EmojiPicker from "emoji-picker-react";
+import { CurrentUserContext } from "../CurrentUserContext";
+import S from "string";
 
-export default function ChatMessage() {
+export default function ChatMessage({ message }) {
 	const [showReaction, setshowReaction] = useState("hidden");
+	const { currentUser } = useContext(CurrentUserContext);
+
+	let sender =
+		message.sender._id === currentUser._id
+			? "You"
+			: S(message.sender.username).titleCase().s;
 
 	return (
 		<div className="flex flex-row gap-2 ">
@@ -11,8 +19,8 @@ export default function ChatMessage() {
 				src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLe5PABjXc17cjIMOibECLM7ppDwMmiDg6Dw&usqp=CAU"
 				alt=""
 			/>
-			<div>
-				<h1 className="font-semibold text-sm">Ahmed Mohamed</h1>
+			<div className="flex flex-col gap-0">
+				<h1 className="font-semibold text-sm">{sender}</h1>
 				<div
 					className="hover:bg-gray-100 py-2 px-1 relative"
 					onMouseOver={() => {
@@ -22,15 +30,7 @@ export default function ChatMessage() {
 						setshowReaction("hidden");
 					}}
 				>
-					<p className="w-3/4">
-						Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint
-						corporis velit ut illo, dignissimos repellendus veniam. Neque fuga
-						ex error saepe, corrupti facilis nisi maxime laudantium eaque sit
-						officiis numquam? Lorem ipsum dolor sit amet consectetur adipisicing
-						elit. Repudiandae, commodi sunt temporibus expedita quis atque
-						assumenda laborum voluptas eum soluta odit natus? Totam facilis qui
-						quae laborum eius neque magni!
-					</p>
+					<p className="max-w-3/4">{message.content}</p>
 					<div className="flex flex-row gap-2">
 						<div className="flex flex-row items-center justify-center rounded-full border-[#1D9BD1] border-2  px-[6px] py-[2px] bg-[#E8F5FA]">
 							😊 1

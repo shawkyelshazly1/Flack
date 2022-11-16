@@ -20,7 +20,7 @@ class MessageRpository {
 		try {
 			const chatMessages = await MessageModel.find({
 				chat: mongoose.Types.ObjectId(chatId),
-			});
+			}).populate("sender", "-password");
 			return chatMessages;
 		} catch (error) {
 			consola.error(error);
