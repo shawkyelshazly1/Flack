@@ -79,8 +79,9 @@ module.exports = (app) => {
 	// search users
 	app.get("/user/search/:username", checkAuth, async (req, res, next) => {
 		const { username } = req.params;
+		const { _id } = req.user;
 
-		const data = await userService.searchUsers(username);
+		const data = await userService.searchUsers(username, _id);
 
 		// validate and return if error
 		if (data.error) {

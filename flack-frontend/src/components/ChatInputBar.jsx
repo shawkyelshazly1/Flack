@@ -1,5 +1,8 @@
+import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useState } from "react";
+
 import { MdSend } from "react-icons/md";
+import api from "../api";
 import { CurrentAppContext } from "../CurrentAppContext";
 import { CurrentUserContext } from "../CurrentUserContext";
 
@@ -8,13 +11,42 @@ export default function ChatInputBar() {
 	const { currentUser } = useContext(CurrentUserContext);
 
 	// load context
-	const { socketIOClient, selectedChat } = useContext(CurrentAppContext);
+	const {
+		socketIOClient,
+		selectedChat,
+		setChatMessages,
+		chatMessages,
+		updateChatLastMessage,
+	} = useContext(CurrentAppContext);
+
+	// send message mutation
+	const createMessage = useMutation(({ messageData }) => {
+		return api.post(`/message`, messageData).then((res) => {
+			return res.data;
+		});
+	});
 
 	// send msg to server
 	const sendMessage = () => {
 		if (msgContent.trim() !== "") {
-			socketIOClient.emit("new_msg", { content: msgContent, chatId: "asdasd" });
-			setMsgContent("");
+			// send message with socket io
+
+			createMessage.mutate(
+				{
+					messageData: { content: msgContent.trim(), chat: selectedChat._id },
+				},
+				{
+					onSuccess: (data) => {
+						setMsgContent("");
+						setChatMessages([data, ...chatMessages]);
+						socketIOClient.emit("new_msg", {
+							message: data,
+							chat: selectedChat,
+						});
+						updateChatLastMessage(selectedChat._id, data);
+					},
+				}
+			);
 		}
 	};
 
@@ -30,8 +62,12 @@ export default function ChatInputBar() {
 					onChange={(e) => {
 						setMsgContent(e.target.value);
 					}}
+					value={msgContent}
 					placeholder={`Message @${receiver.username}`}
 					className="w-full border-2 h-full rounded-2xl focus:outline-none focus:border-[#3F0E40] px-3 "
+					onKeyDown={(e) => {
+						if (e.key === "Enter") sendMessage();
+					}}
 				/>
 				<MdSend
 					className="absolute bottom-[25%] right-5 cursor-pointer"

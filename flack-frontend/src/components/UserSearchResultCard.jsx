@@ -32,6 +32,7 @@ export default function UserSearchResultCard({ user, setshowSearchResult }) {
 								setSelectedChat(data);
 								setshowSearchResult(false);
 							},
+
 							onError: <b>Something went wrong!</b>,
 						}
 					)

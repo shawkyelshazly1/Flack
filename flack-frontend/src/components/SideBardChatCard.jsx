@@ -10,7 +10,6 @@ export default function SideBardChatCard({ chat }) {
 	const { currentUser } = useContext(CurrentUserContext);
 
 	let receiver = chat.users.filter((user) => user._id !== currentUser._id)[0];
-	console.log(chat);
 	let lastMessageSender =
 		chat.lastMessage.sender === currentUser._id ? "You" : receiver.username;
 
@@ -24,11 +23,7 @@ export default function SideBardChatCard({ chat }) {
 				socketIOClient.emit("join_chat", chat._id);
 			}}
 		>
-			<img
-				className="w-12 rounded-lg"
-				src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLe5PABjXc17cjIMOibECLM7ppDwMmiDg6Dw&usqp=CAU"
-				alt=""
-			/>
+			<img className="w-12 rounded-lg" src={receiver.profileImage} alt="" />
 			<div className="flex flex-col gap-1 w-full">
 				<h1 className="font-medium ">
 					{S(receiver.firstName + " " + receiver.lastName).titleCase().s}

@@ -93,10 +93,11 @@ class UserService {
 	}
 
 	// search users
-	async searchUsers(searchQuery) {
+	async searchUsers(searchQuery, userId) {
 		try {
-			
-			const users = await this.repository.FindSimilarUsername(searchQuery);
+			let users = await this.repository.FindSimilarUsername(searchQuery);
+
+			users = users.filter((user) => String(user._id) !== String(userId));
 			return { data: users };
 		} catch (error) {
 			consola.error(error);

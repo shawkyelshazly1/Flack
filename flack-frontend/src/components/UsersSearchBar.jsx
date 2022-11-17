@@ -22,6 +22,7 @@ export default function UsersSearchBar() {
 			onSuccess: (data) => {
 				setSearchResult(data);
 			},
+			refetchOnWindowFocus: false,
 		}
 	);
 

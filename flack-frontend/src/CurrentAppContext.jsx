@@ -19,6 +19,24 @@ export const CurrentAppProvider = ({ children }) => {
 		setSocketIOClient(socket);
 	}, []);
 
+	const updateChatLastMessage = (chatId, lastMessage) => {
+		const chats = chatsList.map((chat) =>
+			chat._id === chatId ? { ...chat, lastMessage } : chat
+		);
+
+		setChatsList(chats);
+	};
+
+	
+
+	const clearStateOnlogout = () => {
+		chatsList = [];
+		socketIOClient = null;
+		isSocketConnected = false;
+		selectedChat = null;
+		chatMessages = [];
+	};
+
 	// state values
 	const stateValues = {
 		chatsList,
@@ -31,6 +49,9 @@ export const CurrentAppProvider = ({ children }) => {
 		setIsSocketConnected,
 		selectedChat,
 		setSelectedChat,
+		updateChatLastMessage,
+		clearStateOnlogout,
+	
 	};
 
 	return (

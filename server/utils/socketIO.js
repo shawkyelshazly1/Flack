@@ -4,7 +4,21 @@ const { Server } = require("socket.io"),
 // configure message events
 const configureMessageEvents = (socket) => {
 	// send message events
-	socket.on("new_msg", async (newMsg) => {});
+	socket.on("new_msg", async (newMsg) => {
+		const { message, chat } = newMsg;
+
+		// validate data exists
+		if (!chat || !message) return;
+
+		await Promise.all(
+			chat.users.map(async (user) => {
+				// send message to all users except sender
+				if (String(user._id) !== String(message.sender._id)) {
+					socket.to(user._id).emit("new_msg_recieved", newMsg);
+				}
+			})
+		);
+	});
 };
 
 //handle disconnection from server

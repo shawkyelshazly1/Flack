@@ -14,8 +14,23 @@ export default function ChatWindow() {
 		selectedChat,
 		isSocketConnected,
 		setIsSocketConnected,
+		setChatMessages,
+		chatMessages,
+		updateChatLastMessage,
+		setChatsList,
+		chatsList,
 	} = useContext(CurrentAppContext);
 	const { currentUser } = useContext(CurrentUserContext);
+
+	//add new chat function
+	const addNewChat = (newChat, lastMessage) => {
+		const chatFound = chatsList.some(
+			(chat) => String(chat._id) === String(newChat._id)
+		);
+		if (!chatFound) {
+			setChatsList([{ newChat, lastMessage }, ...chatsList]);
+		}
+	};
 
 	// useEffect to listen to events
 	useEffect(() => {
@@ -34,7 +49,18 @@ export default function ChatWindow() {
 				setIsSocketConnected(true);
 			});
 		}
-	}, []);
+
+		// handle new Msg recieved
+		socketIOClient.off("new_msg_recieved").on("new_msg_recieved", (newMsg) => {
+			const { chat, message } = newMsg;
+
+			if (String(chat._id) === String(selectedChat?._id)) {
+				setChatMessages([message, ...chatMessages]);
+			}
+			addNewChat(chat, message);
+			updateChatLastMessage(chat._id, message);
+		});
+	});
 
 	return (
 		<div className="flex flex-1 flex-col p-4 h-full ">

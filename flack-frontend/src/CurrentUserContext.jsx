@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import api from "./api";
+import { CurrentAppContext } from "./CurrentAppContext";
 
 // user context
 export const CurrentUserContext = createContext(null);
@@ -8,6 +9,7 @@ export const CurrentUserContext = createContext(null);
 export const CurrentUserProvider = ({ children }) => {
 	// Access the client
 	const queryClient = useQueryClient();
+	const clearStateOnlogout = useContext(CurrentAppContext);
 
 	// initial states
 	const [currentUser, setcurrentUser] = useState();
@@ -25,13 +27,18 @@ export const CurrentUserProvider = ({ children }) => {
 
 		// validate if token exists and call server api to load user
 		if (token && token !== "") {
-			api.get("/user/auth", {}).then((res) => {
-				const user = res.data;
-				setAuthLoading(false);
-				if (user) {
-					setcurrentUser(user);
-				}
-			});
+			api
+				.get("/user/auth", {})
+				.then((res) => {
+					const user = res.data;
+					setAuthLoading(false);
+					if (user) {
+						setcurrentUser(user);
+					}
+				})
+				.catch((error) => {
+					handleLogout();
+				});
 		} else {
 			setAuthLoading(false);
 			setcurrentUser(null);
@@ -44,6 +51,7 @@ export const CurrentUserProvider = ({ children }) => {
 		localStorage.setItem("accessToken", "");
 		setcurrentUser(null);
 		queryClient.removeQueries();
+		clearStateOnlogout();
 	};
 
 	const stateValues = {

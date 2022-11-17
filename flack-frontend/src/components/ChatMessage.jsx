@@ -16,7 +16,7 @@ export default function ChatMessage({ message }) {
 		<div className="flex flex-row gap-2 ">
 			<img
 				className="w-12 h-12 object-cover "
-				src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLe5PABjXc17cjIMOibECLM7ppDwMmiDg6Dw&usqp=CAU"
+				src={message.sender.profileImage}
 				alt=""
 			/>
 			<div className="flex flex-col gap-0">
